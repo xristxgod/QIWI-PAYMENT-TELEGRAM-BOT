@@ -6,3 +6,4 @@ logger = logging.getLogger(__name__)
 
 class Config(object):
     TOKEN = environ.get("TOKEN")
+    DATABASE_URL = environ.get("DATABASE_URL")
