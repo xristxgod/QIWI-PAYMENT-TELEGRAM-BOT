@@ -88,3 +88,25 @@ class DB:
             "UPDATE check_model SET status = 1$ WHERE user_id = 2$ AND bill_id = 3$;",
             (status, user_id, bill_id)
         )
+
+class ConfigToken:
+
+    def __init__(self, name: str = "TG"):
+        self.token = None
+        self.name = name
+
+    def set(self, token: str = None):
+        if token is None:
+            self.token = Config.TG_TOKEN if self.name == "TG" else Config.QIWI_TOKEN
+        else:
+            raise Exception("This token is not suitable!")
+
+    @property
+    def get(self):
+        return self.token
+
+    def delete(self):
+        del self.token
+
+cnf_tg = ConfigToken()
+cnf_qiwi = ConfigToken()

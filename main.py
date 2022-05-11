@@ -1,6 +1,6 @@
-from aiogram import executor
-
-from app.__init__ import dp
+import sys
+from app.cli import main
 
 if __name__ == '__main__':
-    executor.start_polling(dp, skip_updates=True)
+    sys.exit(main())
+
