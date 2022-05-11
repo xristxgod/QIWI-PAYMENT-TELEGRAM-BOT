@@ -16,7 +16,12 @@ async def start(message: types.Message):
             reply_markup=keyboards.topUpMenu
         )
 
+@dp.message_handler()
+async def bot_message(message: types.Message):
+    pass
+
 @dp.callback_query_handlers(text="top_up")
 async def top_up(callback_query: types.CallbackQuery):
     await bot.delete_message(callback_query.from_user.id, callback_query.message.message_id)
-    pass
+    await bot.send_message(callback_query.from_user.id, "Say sum for top up: ")
+
