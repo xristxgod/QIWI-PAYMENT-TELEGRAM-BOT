@@ -30,10 +30,10 @@ async def bot_message(message: types.Message):
                 bill = p2p.bill(amount=amount, lifetime=15, comment=comment)
                 await db.add_check(message.from_user.id, amount=amount, bill_id=bill.bill_id)
                 await bot.send_message(message.from_user.id, (
-                        f"You need to send {amount} RUB for our QIWI account\n"
-                        f"Link: \n"
-                        f"By specifying the payment comment: {comment}"
-                    ))
+                    f"You need to send {amount} RUB for our QIWI account\n"
+                    f"Link to payment: {bill.pay_url} \n"
+                    f"By specifying the payment comment: {comment}"
+                ), reply_markup=keyboards.buy_menu(url=bill.pay_url, bill=bill.bill_id))
             else:
                 await bot.send_message(message.from_user.id, "Min sum for top up is 5 RUB")
         else:
@@ -45,3 +45,12 @@ async def top_up(callback_query: types.CallbackQuery):
     await bot.delete_message(callback_query.from_user.id, callback_query.message.message_id)
     await bot.send_message(callback_query.from_user.id, "Say sum for top up: ")
 
+@dp.callback_query_handler(text_contains="check_")
+async def check(callback_query: types.CallbackQuery):
+    bill = str(callback_query.data[6:])
+    info = db.get_check(bill_id=int(bill), user_id=callback_query.from_user.id)
+    if info:
+        if str(p2p.check(bill_id=bill).status) == "PAID":
+            pass
+    else:
+        await bot.send_message(callback_query.from_user.id, "Check is not found")
