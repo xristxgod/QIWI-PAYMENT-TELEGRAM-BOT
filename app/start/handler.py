@@ -48,9 +48,19 @@ async def top_up(callback_query: types.CallbackQuery):
 @dp.callback_query_handler(text_contains="check_")
 async def check(callback_query: types.CallbackQuery):
     bill = str(callback_query.data[6:])
-    info = db.get_check(bill_id=int(bill), user_id=callback_query.from_user.id)
+    info = await db.get_check(bill_id=bill, user_id=callback_query.from_user.id)
     if info:
         if str(p2p.check(bill_id=bill).status) == "PAID":
-            pass
+            user_balance = await db.get_user_balance(callback_query.from_user.id)
+            amount = int(info[2])
+            await db.set_user_balance(callback_query.from_user.id, balance=user_balance+amount)
+            await bot.send_message(callback_query.from_user.id, "Your bill is top up!")
+            await db.update_check(user_id=callback_query.from_user.id, bill_id=bill, status=True)
+        else:
+            await bot.send_message(
+                callback_query.from_user.id,
+                "You haven't paid the bill!",
+                reply_markup=keyboards.buy_menu(False, bill=bill)
+            )
     else:
-        await bot.send_message(callback_query.from_user.id, "Check is not found")
+        await bot.send_message(callback_query.from_user.id, "Bill is not found")

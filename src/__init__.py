@@ -76,21 +76,14 @@ class DB:
         )
 
     @staticmethod
-    async def get_check(user_id: TGChatID, bill_id: int):
+    async def get_check(user_id: TGChatID, bill_id):
         return await DB._select_method(
             "SELECT bill_id, amount, user_id, status FROM check_model WHERE user_id = 1$ AND bill_id = 2$;",
             (user_id, bill_id)
         )
 
     @staticmethod
-    async def delete_check(user_id: TGChatID, bill_id: int) -> bool:
-        return await DB._insert_method(
-            "DELETE FROM check_model WHERE user_id = 1$ AND bill_id = 2$;",
-            (user_id, bill_id)
-        )
-
-    @staticmethod
-    async def update_check(user_id: TGChatID, bill_id: int, status: bool) -> bool:
+    async def update_check(user_id: TGChatID, bill_id, status: bool) -> bool:
         return await DB._insert_method(
             "UPDATE check_model SET status = 1$ WHERE user_id = 2$ AND bill_id = 3$;",
             (status, user_id, bill_id)
