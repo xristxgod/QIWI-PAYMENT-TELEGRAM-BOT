@@ -19,6 +19,7 @@ class DB:
         bill_id: Integer DEFAULT = NULL
         amount: Decimal NOT NULL DEFAULT = 0.0
         user_id: ForeignKey(user_model)
+        status: Bool NOT NULL DEFAULT = FALSE
     <<<--------------------------------------------------->>>
     """
     @staticmethod
@@ -68,22 +69,29 @@ class DB:
         )
 
     @staticmethod
-    async def add_check(user_id: TGChatID, amount: decimal.Decimal, bill_id: int) -> bool:
+    async def add_check(user_id: TGChatID, amount: decimal.Decimal, bill_id: int, status: bool) -> bool:
         return await DB._insert_method(
-            "INSERT INTO check_model (amount, bill_id, user_id) VALUES (1$, 2$, 3$);",
-            (amount, bill_id, user_id)
+            "INSERT INTO check_model (amount, bill_id, user_id, status) VALUES (1$, 2$, 3$, 4$);",
+            (amount, bill_id, user_id, status)
         )
 
     @staticmethod
     async def get_check(user_id: TGChatID, bill_id: int):
         return await DB._select_method(
-            "SELECT bill_id, amount, user_id FROM check_model WHERE user_id = 1$ AND bill_id = 2$;",
+            "SELECT bill_id, amount, user_id, status FROM check_model WHERE user_id = 1$ AND bill_id = 2$;",
             (user_id, bill_id)
         )
 
     @staticmethod
-    async def delete_check(user_id: TGChatID, bill_id: int):
+    async def delete_check(user_id: TGChatID, bill_id: int) -> bool:
         return await DB._insert_method(
             "DELETE FROM check_model WHERE user_id = 1$ AND bill_id = 2$;",
             (user_id, bill_id)
+        )
+
+    @staticmethod
+    async def update_check(user_id: TGChatID, bill_id: int, status: bool) -> bool:
+        return await DB._insert_method(
+            "UPDATE check_model SET status = 1$ WHERE user_id = 2$ AND bill_id = 3$;",
+            (status, user_id, bill_id)
         )

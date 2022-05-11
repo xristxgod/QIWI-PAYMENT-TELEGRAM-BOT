@@ -24,11 +24,16 @@ async def bot_message(message: types.Message):
     logger.error("HANDLER: bot_message")
     if message.chat.type == "private":
         if message.text.isdigit():
-            message_money = decimals.create_decimal(message.text)
-            if message_money >= 5:
+            amount = decimals.create_decimal(message.text)
+            if amount >= 5:
                 comment = str(message.from_user.id) + "_" + str(random.randint(1000, 9999))
-                bill = p2p.bill(amount=message_money, lifetime=15, comment=comment)
-
+                bill = p2p.bill(amount=amount, lifetime=15, comment=comment)
+                await db.add_check(message.from_user.id, amount=amount, bill_id=bill.bill_id)
+                await bot.send_message(message.from_user.id, (
+                        f"You need to send {amount} RUB for our QIWI account\n"
+                        f"Link: \n"
+                        f"By specifying the payment comment: {comment}"
+                    ))
             else:
                 await bot.send_message(message.from_user.id, "Min sum for top up is 5 RUB")
         else:
