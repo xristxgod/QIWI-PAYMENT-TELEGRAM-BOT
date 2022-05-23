@@ -1,4 +1,4 @@
-from os import environ
+from os import getenv
 import logging
 import decimal
 
@@ -10,6 +10,6 @@ decimals.prec = 8
 
 class Config(object):
     # Config for in .env file
-    TG_TOKEN = environ.get("TG_TOKEN")
-    QIWI_TOKEN = environ.get("TG_TOKEN")
-    DATABASE_URL = environ.get("DATABASE_URL")
+    TG_TOKEN = getenv("TG_TOKEN")
+    QIWI_TOKEN = getenv("QIWI_TOKEN")
+    DATABASE_URL = getenv("DATABASE_URL")
